@@ -1,13 +1,17 @@
 {include file="CoreAdminHome/templates/header.tpl"}
+<script type="text/javascript" src="plugins/FeedAnnotation/templates/feedannotation.js"></script>
+
 <h2>{'FeedAnnotation_Manage'|translate}</h2>
 
 <p>{'FeedAnnotation_AdminDescription'|translate}</p>
 
-<section>
+<section class="sites_selector_container">
+    <span style="line-height: 30px">{'FeedAnnotation_Website'|translate}:</span>
     {include file="CoreHome/templates/sites_selection.tpl"
         idSite=$idSiteSelected sites=$idSitesAvailable showAllSitesItem=false
-        showSelectedSite=true siteSelectorId="feedAnnotationSiteSelect"
+        showSelectedSite=false siteSelectorId="feedAnnotationSiteSelect"
         switchSiteOnSelect=true}
+    <p>SELECTED SITE= {$idSiteSelected}</p>
 </section>
 
 <div class="entityContainer">
@@ -19,8 +23,21 @@
         </tr>
     </thead>
     <tbody>
+    {foreach from=$feeds key=i item=feed}
+        <tr>
+            <td>{$feed.feed_url}</td>
+            <td>{if $feed.last_processed}{$feed.last_processed|date_format}{else}{'FeedAnnotation_Never'|translate}{/if}</td>
+        </tr>
+    {/foreach}
     </tbody>
     </table>
 </div>
 
+<h3>{'FeedAnnotation_AddFeed'|translate}</h3>
+
+<form action="">
+    <label>{'FeedAnnotation_FeedUrl'|translate} <input type="text" id="new_feed_url" placeholder="Feed URL" /></label>
+    <input type="hidden" value="{$idSiteSelected}" />
+    <input type="submit" value="Save" class="submit" />
+</form>
 {include file="CoreAdminHome/templates/footer.tpl"}

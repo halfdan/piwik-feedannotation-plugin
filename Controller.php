@@ -15,6 +15,7 @@ class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
 		$idSitesAvailable = Piwik_SitesManager_API::getInstance()->getSitesWithAdminAccess();
 
 
+		$view->feeds = Piwik_FeedAnnotation_API::getInstance()->getFeeds(array($idSite));
 		$view->idSiteSelected = $idSite;
 		$view->idSitesAvailable = $idSitesAvailable;
 		$view->menu = Piwik_GetAdminMenu();

@@ -49,9 +49,25 @@ class Piwik_FeedAnnotation_API {
 			Piwik_Common::prefixTable("feedannotation"),
 			implode(",", $idSites)
 		);
-		$feeds = Piwik_FetchAll($query);
+
+		$db = Zend_Registry::get('db');
+		$feeds = $db->fetchAll($query);
 
 		return $feeds;
+	}
+
+	public function addFeed($idSite, $url) {
+		Piwik::checkUserHasAdminAccess(array($idSite));
+
+		if($this->isValidFeedUrl($url)) {
+			$query = sprintf("INSERT INTO %s (idsite, feed_url) VALUES (?, ?)",
+				Piwik_Common::prefixTable("feedannotation")
+			);
+			$db = Zend_Registry::get('db');
+			$db->query($query, array($idSite, $url));
+		} else {
+			throw new Piwik_FeedAnnotation_InvalidFeedException(sprintf("Feed URL not valid: %s", $url));
+		}
 	}
 
 	/**
@@ -68,4 +84,11 @@ class Piwik_FeedAnnotation_API {
 			return false;
 		}
 	}
+}
+
+/**
+ * Custom exception that is thrown when an invalid feed URL is specified.
+ */
+class Piwik_FeedAnnotation_InvalidFeedException extends Exception {
+
 }
