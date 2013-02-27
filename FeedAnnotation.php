@@ -45,6 +45,7 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 			idfeed INT NOT NULL AUTO_INCREMENT,
 			idsite INT(11) NOT NULL,
 			feed_url VARCHAR(200) NOT NULL,
+			last_processed DATETIME,
 			PRIMARY KEY (idfeed)
 		) DEFAULT CHARSET=utf8;";
 
@@ -67,7 +68,8 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 	public function getListHooksRegistered()
 	{
 		return array(
-			'AdminMenu.add' => 'addAdminMenu'
+			'AdminMenu.add' => 'addAdminMenu',
+			'TaskScheduler.getScheduledTasks' => 'getScheduledTasks'
 		);
 	}
 
@@ -79,5 +81,30 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 			array('module' => 'FeedAnnotation', 'action' => 'index'),
 			Piwik::isUserHasSomeAdminAccess(),
 			$order = 10);
+	}
+
+	/**
+	 * Gets all scheduled tasks executed by this plugin.
+	 *
+	 * @param Piwik_Event_Notification $notification  notification object
+	 */
+	public function getScheduledTasks($notification)
+	{
+		$tasks = &$notification->getNotificationObject();
+
+		$cacheDataByArchiveNameReportsTask = new Piwik_ScheduledTask(
+			$this,
+			'updateFeedAnnotations',
+			null,
+			new Piwik_ScheduledTime_Daily()
+		);
+		$tasks[] = $cacheDataByArchiveNameReportsTask;
+	}
+
+	/**
+	 * Fetches configured feeds and creates/updates Annotations.
+	 */
+	public function updateFeedAnnotations() {
+
 	}
 }
