@@ -3,7 +3,7 @@
  *
  * @package Piwik_FeedAnnotation
  */
-class Piwik_FeedAnnotation_Controller extends Piwik_Controller
+class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
 {
 	function index()
 	{
