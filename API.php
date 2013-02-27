@@ -17,7 +17,7 @@
 class Piwik_FeedAnnotation_API {
 
 	protected static $instance;
-	
+
 	/**
 	 * Gets or creates the FeedAnnotation API singleton.
 	 */
@@ -30,6 +30,13 @@ class Piwik_FeedAnnotation_API {
 		return self::$instance;
 	}
 
+	/**
+	 * Returns all configured feeds for all idSites.
+	 * User needs to have admin access to a site.
+	 *
+	 * @param array $idSites
+	 * @return array
+	 */
 	public function getFeeds($idSites = array()) {
 		if (count($idSites)) {
 			Piwik::checkUserHasViewAccess($idSites);
@@ -45,5 +52,20 @@ class Piwik_FeedAnnotation_API {
 		$feeds = Piwik_FetchAll($query);
 
 		return $feeds;
+	}
+
+	/**
+	 * Checks whether the URL returns a parsable feed (RSS/Atom)
+	 *
+	 * @param $url
+	 * @return bool
+	 */
+	public function isValidFeedUrl($url) {
+		try {
+			Zend_Feed::import($url);
+			return true;
+		} catch (Zend_Feed_Exception $e) {
+			return false;
+		}
 	}
 }
