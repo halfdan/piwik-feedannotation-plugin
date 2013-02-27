@@ -34,6 +34,36 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 			'translationAvailable' => true,
 		);
 	}
+
+	/**
+	 * Create required FeedAnnotation database table
+	 *
+	 * @throws Exception
+	 */
+	public function install() {
+		$tableFeedAnnotation = "CREATE TABLE " . Piwik_Common::prefixTable("feedannotation") . " (
+			idfeed INT NOT NULL AUTO_INCREMENT,
+			idsite INT(11) NOT NULL,
+			feed_url VARCHAR(200) NOT NULL,
+			PRIMARY KEY (idfeed)
+		) DEFAULT CHARSET=utf8;";
+
+		try {
+			Piwik_Exec($tableFeedAnnotation);
+		} catch (Exception $e) {
+			// mysql code error 1050:table already exists
+			// see bug #153 http://dev.piwik.org/trac/ticket/153
+			if (!Zend_Registry::get('db')->isErrNo($e, '1050')) {
+				throw $e;
+			}
+		}
+	}
+
+	/**
+	 * Return the registered hooks
+	 *
+	 * @return array
+	 */
 	public function getListHooksRegistered()
 	{
 		return array(
@@ -41,6 +71,9 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 		);
 	}
 
+	/**
+	 * Add new "Feed Annotations" admin menu.
+	 */
 	public function addAdminMenu() {
 		Piwik_AddAdminSubMenu('General_Settings', 'FeedAnnotation_MenuGeneralSettings',
 			array('module' => 'FeedAnnotation', 'action' => 'index'),
