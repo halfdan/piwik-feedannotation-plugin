@@ -34,4 +34,17 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 			'translationAvailable' => true,
 		);
 	}
+	public function getListHooksRegistered()
+	{
+		return array(
+			'AdminMenu.add' => 'addAdminMenu'
+		);
+	}
+
+	public function addAdminMenu() {
+		Piwik_AddAdminSubMenu('General_Settings', 'FeedAnnotation_MenuGeneralSettings',
+			array('module' => 'FeedAnnotation', 'action' => 'index'),
+			Piwik::isUserHasSomeAdminAccess(),
+			$order = 10);
+	}
 }

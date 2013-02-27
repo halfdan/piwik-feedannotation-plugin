@@ -11,4 +11,6 @@
 
 $translations = array(
 	'FeedAnnotation_PluginDescription' => 'Plugin to automatically create Annotations by polling a feed (Atom/RSS)',
+	'FeedAnnotation_MenuGeneralSettings' => 'Feed Annotations',
+	'FeedAnnotation_Manage' => 'Manage Feed Annotations',
 );
