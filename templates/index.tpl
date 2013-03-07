@@ -11,7 +11,6 @@
         idSite=$idSiteSelected sites=$idSitesAvailable showAllSitesItem=false
         showSelectedSite=false siteSelectorId="feedAnnotationSiteSelect"
         switchSiteOnSelect=true}
-    <p>SELECTED SITE= {$idSiteSelected}</p>
 </section>
 
 <div class="entityContainer">
@@ -23,12 +22,18 @@
         </tr>
     </thead>
     <tbody>
+    {if !empty($feeds)}
     {foreach from=$feeds key=i item=feed}
         <tr>
             <td>{$feed.feed_url}</td>
             <td>{if $feed.last_processed}{$feed.last_processed|date_format}{else}{'FeedAnnotation_Never'|translate}{/if}</td>
         </tr>
     {/foreach}
+    {else}
+        <tr>
+            <td colspan="2">{'FeedAnnotation_NoFeeds'|translate}</td>
+        </tr>
+    {/if}
     </tbody>
     </table>
 </div>
