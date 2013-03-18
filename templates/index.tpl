@@ -9,8 +9,8 @@
     <span style="line-height: 30px">{'FeedAnnotation_Website'|translate}:</span>
     {include file="CoreHome/templates/sites_selection.tpl"
         idSite=$idSiteSelected sites=$idSitesAvailable showAllSitesItem=false
-        showSelectedSite=false siteSelectorId="feedAnnotationSiteSelect"
-        switchSiteOnSelect=true}
+        showSelectedSite=true siteSelectorId="feedAnnotationSiteSelect"
+        switchSiteOnSelect=true siteName=$siteName}
 </section>
 
 <div class="entityContainer">
