@@ -34,6 +34,6 @@ class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
         } catch (Piwik_FeedAnnotation_InvalidFeedException $ex) {
             // ToDo
         }
-        echo $this->index();
+        $this->redirectToIndex('FeedAnnotation', 'index');
     }
 }
