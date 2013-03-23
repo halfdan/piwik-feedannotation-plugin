@@ -69,7 +69,8 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 	{
 		return array(
 			'AdminMenu.add' => 'addAdminMenu',
-			'TaskScheduler.getScheduledTasks' => 'getScheduledTasks'
+			'TaskScheduler.getScheduledTasks' => 'getScheduledTasks',
+            'AssetManager.getJsFiles' => 'getJsFiles'
 		);
 	}
 
@@ -82,6 +83,18 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 			Piwik::isUserHasSomeAdminAccess(),
 			$order = 10);
 	}
+
+    /**
+     * Add feedannotation.js
+     * for the AssetManager.
+     *
+     * @param $notification Event_Notification
+     */
+    public function getJsFiles($notification)
+    {
+        $jsFiles = &$notification->getNotificationObject();
+        $jsFiles[] = "plugins/FeedAnnotation/templates/feedannotation.js";
+    }
 
 	/**
 	 * Gets all scheduled tasks executed by this plugin.
@@ -107,7 +120,6 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 	public function updateFeedAnnotations() {
 		$feeds = Piwik_FeedAnnotation_API::getInstance()->getFeeds();
 
-
 		foreach($feeds as $feed) {
 			try {
 				$this->processFeedUrl($feed);
@@ -121,10 +133,9 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 	 * Fetches a feed by its URL and adds new feed items as annotations.
 	 * New items are determined by last_processed date and time.
 	 *
-	 * @param $idSite
-	 * @param $url
+	 * @param $feed array
 	 */
-	private function processFeedUrl($feed) {
+	private function processFeedUrl(array $feed) {
 		$lastProcessed = $feed['last_processed'];
 		$idSite = $feed['idsite'];
 		$idFeed = $feed['idfeed'];
