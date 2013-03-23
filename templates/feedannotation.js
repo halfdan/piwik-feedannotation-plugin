@@ -1,5 +1,5 @@
 /*!
- *
+ * Validate Feed-URL and show error if invalid.
  */
 $(document).ready(function() {
     $("#feed_url").focusout(function() {
@@ -22,4 +22,6 @@ $(document).ready(function() {
         ajaxRequest.setLoadingElement("#ajaxLoadingFeedUrl");
         ajaxRequest.send(false);
     });
+
+
 });

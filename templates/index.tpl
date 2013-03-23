@@ -40,11 +40,11 @@
 
 <h3>{'FeedAnnotation_AddFeed'|translate}</h3>
 
-<form action="">
-    <label>{'FeedAnnotation_FeedUrl'|translate} <input type="text" id="feed_url" placeholder="Feed URL" /></label>
+<form action="{url action=createFeed}" method="POST">
+    <label>{'FeedAnnotation_FeedUrl'|translate} <input type="text" name="feedUrl" id="feed_url" placeholder="Feed URL" /></label>
     {ajaxErrorDiv id=ajaxErrorFeedUrl}
     {ajaxLoadingDiv id=ajaxLoadingFeedUrl}
-    <input type="hidden" value="{$idSiteSelected}" /><br />
+    <input type="hidden" name="idSiteSelected" value="{$idSiteSelected}" /><br />
     <input type="submit" value="Save" class="submit" />
 </form>
 {include file="CoreAdminHome/templates/footer.tpl"}

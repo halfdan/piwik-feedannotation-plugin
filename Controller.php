@@ -5,7 +5,7 @@
  */
 class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
 {
-	function index()
+	public function index()
 	{
 		Piwik::checkUserHasSomeAdminAccess();
 		$view = Piwik_View::factory('index');
@@ -21,4 +21,19 @@ class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
 		$view->menu = Piwik_GetAdminMenu();
 		echo $view->render();
 	}
+
+    public function createFeed()
+    {
+        $idSite = Piwik_Common::getRequestVar('idSiteSelected', false, 'int');
+        Piwik::isUserHasAdminAccess($idSite);
+
+        $feedURL = Piwik_Common::getRequestVar('feedUrl');
+        try
+        {
+            Piwik_FeedAnnotation_API::getInstance()->addFeed($idSite, $feedURL);
+        } catch (Piwik_FeedAnnotation_InvalidFeedException $ex) {
+            // ToDo
+        }
+        echo $this->index();
+    }
 }
