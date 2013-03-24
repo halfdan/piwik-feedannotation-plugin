@@ -56,10 +56,42 @@ class Piwik_FeedAnnotation_API {
 		return $feeds;
 	}
 
-	public function addFeed($idSite, $url) {
+    /**
+     * Fetches a single feed by id.
+     *
+     * @param int $idFeed
+     * @throws Piwik_FeedAnnotation_InvalidFeedException
+     */
+    public function getFeed($idFeed)
+    {
+        $query = sprintf("SELECT * FROM %s WHERE idfeed = %d",
+            Piwik_Common::prefixTable("feedannotation"), $idFeed
+        );
+
+        $db = Zend_Registry::get('db');
+        $feed = $db->fetchRow($query);
+
+        if($feed)
+        {
+            Piwik::isUserHasViewAccess(array($feed['idsite']));
+            return $feed;
+        } else {
+            throw new Piwik_FeedAnnotation_InvalidFeedException(sprintf("Feed ID not valid: %d", $idFeed));
+        }
+    }
+
+    /**
+     * Adds a new feed to idSite.
+     *
+     * @param $idSite
+     * @param $url
+     * @throws Piwik_FeedAnnotation_InvalidFeedException
+     */
+    public function addFeed($idSite, $url) {
 		Piwik::checkUserHasAdminAccess(array($idSite));
 
-		if($this->isValidFeedUrl($url)) {
+		if($this->isValidFeedUrl($url))
+        {
 			$query = sprintf("INSERT INTO %s (idsite, feed_url) VALUES (?, ?)",
 				Piwik_Common::prefixTable("feedannotation")
 			);

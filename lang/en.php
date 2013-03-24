@@ -20,4 +20,5 @@ $translations = array(
 	'FeedAnnotation_Never' => 'Never',
 	'FeedAnnotation_Website' => 'Website',
 	'FeedAnnotation_NoFeeds' => 'You have not set up any feeds yet!',
+    'FeedAnnotation_ProcessNow' => 'Process now',
 );

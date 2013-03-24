@@ -36,4 +36,21 @@ class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
         }
         $this->redirectToIndex('FeedAnnotation', 'index');
     }
+
+    public function processFeed()
+    {
+        $idSite = Piwik_Common::getRequestVar('idSiteSelected', false, 'int');
+        Piwik::isUserHasAdminAccess($idSite);
+
+        $idfeed = Piwik_Common::getRequestVar('idfeed', false, 'int');
+        try
+        {
+            $feed = Piwik_FeedAnnotation_API::getInstance()->getFeed($idfeed);
+            $processor = new Piwik_FeedAnnotation_FeedProcessor($feed);
+            $processor->processFeed();
+        } catch (Piwik_FeedAnnotation_InvalidFeedException $ex) {
+            // ToDo
+        }
+        $this->redirectToIndex('FeedAnnotation', 'index');
+    }
 }

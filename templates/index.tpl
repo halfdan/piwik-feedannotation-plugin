@@ -26,7 +26,13 @@
     {foreach from=$feeds key=i item=feed}
         <tr>
             <td>{$feed.feed_url}</td>
-            <td>{if $feed.last_processed}{$feed.last_processed|date_format}{else}{'FeedAnnotation_Never'|translate}{/if}</td>
+            <td>
+                {if $feed.last_processed}
+                    {$feed.last_processed|date_format}
+                {else}
+                    {'FeedAnnotation_Never'|translate}, <a href="{url action=processFeed idfeed=$feed.idfeed}">{'FeedAnnotation_ProcessNow'|translate}</a>
+                {/if}
+            </td>
         </tr>
     {/foreach}
     {else}
