@@ -8,7 +8,18 @@ Since the "Annotations" plugin was introduced in Piwik 1.10, this plugin require
 
 ## Documentation
 
-Coming.
+1. Clone the plugin into the plugins directory of your Piwik installation.
+
+   ```
+   cd plugins/
+   git clone https://github.com/halfdan/piwik-feedannotation-plugin.git FeedAnnotation
+   ```
+
+2. Login as superuser into your Piwik installation and activate the plugin under Settings -> Plugins
+
+3. You can add new feeds for sites you have admin access to under Settings -> Feed Annotations
+
+Feeds are fetched once a day using "scheduled tasks". After adding a feed you can manually force the plugin to process your feed by clicking the "Process now" link.
 
 ## Contribute 
 
