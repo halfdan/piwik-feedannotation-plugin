@@ -8,17 +8,21 @@
  * @category Piwik_Plugins
  * @package Piwik_FeedAnnotation
  */
+namespace Piwik\Plugins\FeedAnnotation;
+use Piwik\Common;
+use Piwik\Piwik;
+use Piwik\Plugin;
 
 /**
  *
  * @package Piwik_FeedAnnotation
  */
-class Piwik_FeedAnnotation extends Piwik_Plugin
+class FeedAnnotation extends Plugin
 {
 	/**
 	 * Return information about this plugin.
 	 *
-	 * @see Piwik_Plugin
+	 * @see \Piwik\Plugin
 	 *
 	 * @return array
 	 */
@@ -38,10 +42,10 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 	/**
 	 * Create required FeedAnnotation database table
 	 *
-	 * @throws Exception
+	 * @throws \Exception
 	 */
 	public function install() {
-		$tableFeedAnnotation = "CREATE TABLE " . Piwik_Common::prefixTable("feedannotation") . " (
+		$tableFeedAnnotation = "CREATE TABLE " . Common::prefixTable("feedannotation") . " (
 			idfeed INT NOT NULL AUTO_INCREMENT,
 			idsite INT(11) NOT NULL,
 			feed_url VARCHAR(200) NOT NULL,
@@ -50,11 +54,12 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 		) DEFAULT CHARSET=utf8;";
 
 		try {
-			Piwik_Exec($tableFeedAnnotation);
-		} catch (Exception $e) {
+
+			\Piwik\Db::Exec($tableFeedAnnotation);
+		} catch (\Exception $e) {
 			// mysql code error 1050:table already exists
 			// see bug #153 http://dev.piwik.org/trac/ticket/153
-			if (!Zend_Registry::get('db')->isErrNo($e, '1050')) {
+			if (!\Zend_Registry::get('db')->isErrNo($e, '1050')) {
 				throw $e;
 			}
 		}
@@ -87,29 +92,26 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
     /**
      * Add feedannotation.js
      * for the AssetManager.
-     *
-     * @param $notification Event_Notification
      */
-    public function getJsFiles($notification)
+    public function getJsFiles(&$jsFiles)
     {
-        $jsFiles = &$notification->getNotificationObject();
         $jsFiles[] = "plugins/FeedAnnotation/templates/feedannotation.js";
     }
 
 	/**
 	 * Gets all scheduled tasks executed by this plugin.
 	 *
-	 * @param Piwik_Event_Notification $notification  notification object
+	 * @param \EventNotification $notification  notification object
 	 */
 	public function getScheduledTasks($notification)
 	{
 		$tasks = &$notification->getNotificationObject();
 
-		$updateFeedAnnotationsTask = new Piwik_ScheduledTask(
+		$updateFeedAnnotationsTask = new \Piwik\ScheduledTask(
 			$this,
 			'updateFeedAnnotations',
 			null,
-			new Piwik_ScheduledTime_Daily()
+			new \Piwik\ScheduledTime\Daily()
 		);
 		$tasks[] = $updateFeedAnnotationsTask;
 	}
@@ -118,14 +120,14 @@ class Piwik_FeedAnnotation extends Piwik_Plugin
 	 * Fetches configured feeds and creates/updates Annotations.
 	 */
 	public function updateFeedAnnotations() {
-		$feeds = Piwik_FeedAnnotation_API::getInstance()->getFeeds();
+		$feeds = API::getInstance()->getFeeds();
 
 		foreach($feeds as $feed) {
-            $processor = new Piwik_FeedAnnotation_FeedProcessor($feed);
+            $processor = new FeedProcessor($feed);
 			try {
 				$processor->processFeed();
-			} catch (Zend_Feed_Exception $ex) {
-				Zend_Registry::get('logger_exception')->logEvent( $ex );
+			} catch (\Zend_Feed_Exception $ex) {
+				\Zend_Registry::get('logger_exception')->logEvent( $ex );
 			}
 		}
 	}

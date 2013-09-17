@@ -1,0 +1,15 @@
+{
+    "FeedAnnotation": {
+        "PluginDescription" : "Plugin to automatically create Annotations by polling a feed (Atom/RSS)",
+        "MenuGeneralSettings" : "Feed Annotations",
+        "Manage" : "Manage Feed Annotations",
+        "AdminDescription" : "Here you can add and remove feeds from your websites. Feeds are automatically fetched on a daily basis and new feed items will be added as Annotations.",
+        "FeedUrl" : "Feed URL",
+        "LastProcessed" : "Last Processed",
+        "AddFeed" : "Add Feed",
+        "Never" : "Never",
+        "Website" : "Website",
+        "NoFeeds" : "You have not set up any feeds yet!",
+        "ProcessNow" : "Process now"
+    }
+}

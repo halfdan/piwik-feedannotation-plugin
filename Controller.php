@@ -1,37 +1,43 @@
 <?php
+namespace Piwik\Plugins\FeedAnnotation;
+use Piwik\Common;
+use Piwik\Controller\Admin as AdminController;
+use Piwik\Piwik;
+use Piwik\Plugins\SitesManager\API as SitesManagerAPI;
+
 /**
  *
  * @package Piwik_FeedAnnotation
  */
-class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
+class Controller extends AdminController
 {
 	public function index()
 	{
 		Piwik::checkUserHasSomeAdminAccess();
-		$view = Piwik_View::factory('index');
+		$view = new \Piwik\View('@FeedAnnotation/index');
 		$this->setBasicVariablesView($view);
 
-		$idSite = Piwik_Common::getRequestVar('idSite', false, 'int');
-		$idSitesAvailable = Piwik_SitesManager_API::getInstance()->getSitesWithAdminAccess();
+		$idSite = Common::getRequestVar('idSite', false, 'int');
+		$idSitesAvailable = SitesManagerAPI::getInstance()->getSitesWithAdminAccess();
 
-		$view->feeds = Piwik_FeedAnnotation_API::getInstance()->getFeeds(array($idSite));
+		$view->feeds = API::getInstance()->getFeeds(array($idSite));
 		$view->idSiteSelected = $idSite;
 		$view->idSitesAvailable = $idSitesAvailable;
-		$view->siteName = Piwik_Site::getNameFor($idSite);
+		$view->siteName = \Piwik\Site::getNameFor($idSite);
 		$view->menu = Piwik_GetAdminMenu();
 		echo $view->render();
 	}
 
     public function createFeed()
     {
-        $idSite = Piwik_Common::getRequestVar('idSiteSelected', false, 'int');
+        $idSite = Common::getRequestVar('idSiteSelected', false, 'int');
         Piwik::isUserHasAdminAccess($idSite);
 
-        $feedURL = Piwik_Common::getRequestVar('feedUrl');
+        $feedURL = Common::getRequestVar('feedUrl');
         try
         {
-            Piwik_FeedAnnotation_API::getInstance()->addFeed($idSite, $feedURL);
-        } catch (Piwik_FeedAnnotation_InvalidFeedException $ex) {
+            API::getInstance()->addFeed($idSite, $feedURL);
+        } catch (InvalidFeedException $ex) {
             // ToDo
         }
         $this->redirectToIndex('FeedAnnotation', 'index');
@@ -39,16 +45,16 @@ class Piwik_FeedAnnotation_Controller extends Piwik_Controller_Admin
 
     public function processFeed()
     {
-        $idSite = Piwik_Common::getRequestVar('idSiteSelected', false, 'int');
+        $idSite = Common::getRequestVar('idSiteSelected', false, 'int');
         Piwik::isUserHasAdminAccess($idSite);
 
-        $idfeed = Piwik_Common::getRequestVar('idfeed', false, 'int');
+        $idfeed = Common::getRequestVar('idfeed', false, 'int');
         try
         {
-            $feed = Piwik_FeedAnnotation_API::getInstance()->getFeed($idfeed);
-            $processor = new Piwik_FeedAnnotation_FeedProcessor($feed);
+            $feed = API::getInstance()->getFeed($idfeed);
+            $processor = new FeedProcessor($feed);
             $processor->processFeed();
-        } catch (Piwik_FeedAnnotation_InvalidFeedException $ex) {
+        } catch (InvalidFeedException $ex) {
             // ToDo
         }
         $this->redirectToIndex('FeedAnnotation', 'index');

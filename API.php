@@ -9,19 +9,23 @@
  * @package Piwik_API
  */
 
+namespace Piwik\Plugins\FeedAnnotation;
+use Piwik\Piwik;
+use Piwik\Common;
+
 /**
  * FeedAnnotation API is used to request the configured Feed Annotation URLs.
  *
  * @package Piwik_FeedAnnotation
  */
-class Piwik_FeedAnnotation_API {
+class API {
 
 	protected static $instance;
 
 	/**
 	 * Gets or creates the FeedAnnotation API singleton.
 	 */
-	static public function getInstance()
+	public static function getInstance()
 	{
 		if (self::$instance == null)
 		{
@@ -42,15 +46,15 @@ class Piwik_FeedAnnotation_API {
 			Piwik::checkUserHasViewAccess($idSites);
 		} else {
 			Piwik::checkUserHasSomeViewAccess();
-			$idSites = Piwik_SitesManager_API::getInstance()->getSitesIdWithAtLeastViewAccess();
+			$idSites = Piwik\Plugins\SitesManager\API::getInstance()->getSitesIdWithAtLeastViewAccess();
 		}
 
 		$query = sprintf("SELECT * FROM %s WHERE idsite IN (%s)",
-			Piwik_Common::prefixTable("feedannotation"),
+			Common::prefixTable("feedannotation"),
 			implode(",", $idSites)
 		);
 
-		$db = Zend_Registry::get('db');
+		$db = \Zend_Registry::get('db');
 		$feeds = $db->fetchAll($query);
 
 		return $feeds;
@@ -60,15 +64,15 @@ class Piwik_FeedAnnotation_API {
      * Fetches a single feed by id.
      *
      * @param int $idFeed
-     * @throws Piwik_FeedAnnotation_InvalidFeedException
+     * @throws InvalidFeedException
      */
     public function getFeed($idFeed)
     {
         $query = sprintf("SELECT * FROM %s WHERE idfeed = %d",
-            Piwik_Common::prefixTable("feedannotation"), $idFeed
+            Common::prefixTable("feedannotation"), $idFeed
         );
 
-        $db = Zend_Registry::get('db');
+        $db = \Zend_Registry::get('db');
         $feed = $db->fetchRow($query);
 
         if($feed)
@@ -76,7 +80,7 @@ class Piwik_FeedAnnotation_API {
             Piwik::isUserHasViewAccess(array($feed['idsite']));
             return $feed;
         } else {
-            throw new Piwik_FeedAnnotation_InvalidFeedException(sprintf("Feed ID not valid: %d", $idFeed));
+            throw new InvalidFeedException(sprintf("Feed ID not valid: %d", $idFeed));
         }
     }
 
@@ -85,7 +89,7 @@ class Piwik_FeedAnnotation_API {
      *
      * @param $idSite
      * @param $url
-     * @throws Piwik_FeedAnnotation_InvalidFeedException
+     * @throws InvalidFeedException
      */
     public function addFeed($idSite, $url) {
 		Piwik::checkUserHasAdminAccess(array($idSite));
@@ -93,12 +97,12 @@ class Piwik_FeedAnnotation_API {
 		if($this->isValidFeedUrl($url))
         {
 			$query = sprintf("INSERT INTO %s (idsite, feed_url) VALUES (?, ?)",
-				Piwik_Common::prefixTable("feedannotation")
+				Common::prefixTable("feedannotation")
 			);
-			$db = Zend_Registry::get('db');
+			$db = \Zend_Registry::get('db');
 			$db->query($query, array($idSite, $url));
 		} else {
-			throw new Piwik_FeedAnnotation_InvalidFeedException(sprintf("Feed URL not valid: %s", $url));
+			throw new InvalidFeedException(sprintf("Feed URL not valid: %s", $url));
 		}
 	}
 
@@ -110,9 +114,9 @@ class Piwik_FeedAnnotation_API {
 	 */
 	public function isValidFeedUrl($url) {
 		try {
-			Zend_Feed::import($url);
+			\Zend_Feed::import($url);
 			return true;
-		} catch (Zend_Feed_Exception $e) {
+		} catch (\Zend_Feed_Exception $e) {
 			return false;
 		}
 	}
@@ -121,6 +125,6 @@ class Piwik_FeedAnnotation_API {
 /**
  * Custom exception that is thrown when an invalid feed URL is specified.
  */
-class Piwik_FeedAnnotation_InvalidFeedException extends Exception {
+class InvalidFeedException extends \Exception {
 
 }
