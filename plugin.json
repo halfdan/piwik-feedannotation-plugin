@@ -1,7 +1,7 @@
 {
     "name": "FeedAnnotation",
     "description": "Plugin to automatically create Annotations by polling a feed (Atom/RSS)",
-    "version": "0.1.0",
+    "version": "0.9.5",
     "keywords": ["rss", "atom", "annotation", "feed"],
     "homepage": "http://github.com/halfdan/piwik-feedannotation-plugin",
     "license": "GPL-3.0+",
@@ -13,6 +13,6 @@
         }
     ],
     "require": {
-        "piwik": ">=1.10.0",
+        "piwik": ">=2.0.0"
     }
 }
