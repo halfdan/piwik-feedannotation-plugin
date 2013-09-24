@@ -20,26 +20,6 @@ use Piwik\Plugin;
 class FeedAnnotation extends Plugin
 {
 	/**
-	 * Return information about this plugin.
-	 *
-	 * @see \Piwik\Plugin
-	 *
-	 * @return array
-	 */
-	public function getInformation()
-	{
-		return array(
-			'description' => Piwik_Translate('FeedAnnotation_PluginDescription'),
-			'author' => 'Fabian Becker <halfdan@xnorfz.de>',
-			'author_homepage' => 'http://geekproject.eu/',
-			'license' => 'GPL v3 or later',
-			'license_homepage' => 'http://www.gnu.org/licenses/gpl.html',
-			'version' => '0.1',
-			'translationAvailable' => true,
-		);
-	}
-
-	/**
 	 * Create required FeedAnnotation database table
 	 *
 	 * @throws \Exception
