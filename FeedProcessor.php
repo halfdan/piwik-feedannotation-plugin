@@ -38,8 +38,6 @@ class FeedProcessor
 
         $feedData = \Zend_Feed::import($url);
 
-        $db = \Zend_Registry::get('db');
-
         foreach($feedData as $feedEntry) {
             $date = null;
             if(!empty($feedEntry->published)) {
@@ -61,9 +59,7 @@ class FeedProcessor
             }
         }
         // Update last_processed
-        $db->update(Common::prefixTable("feedannotation"),
-            array("last_processed" => new \Zend_Db_Expr('now()')),
-            sprintf('idfeed = %d', $idFeed)
-        );
+        $sql = sprintf("UPDATE %s SET last_processed = now() WHERE idfeed = %d", Common::prefixTable("feedannotation"), $idFeed);
+        \Piwik\Db::exec($sql);
     }
 }

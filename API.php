@@ -54,8 +54,7 @@ class API {
 			implode(",", $idSites)
 		);
 
-		$db = \Zend_Registry::get('db');
-		$feeds = $db->fetchAll($query);
+		$feeds = \Piwik\Db::fetchAll($query);
 
 		return $feeds;
 	}
@@ -72,8 +71,7 @@ class API {
             Common::prefixTable("feedannotation"), $idFeed
         );
 
-        $db = \Zend_Registry::get('db');
-        $feed = $db->fetchRow($query);
+        $feed = \Piwik\Db::fetchRow($query);
 
         if($feed)
         {
@@ -99,8 +97,7 @@ class API {
 			$query = sprintf("INSERT INTO %s (idsite, feed_url) VALUES (?, ?)",
 				Common::prefixTable("feedannotation")
 			);
-			$db = \Zend_Registry::get('db');
-			$db->query($query, array($idSite, $url));
+            \Piwik\Db::query($query, array($idSite, $url));
 		} else {
 			throw new InvalidFeedException(sprintf("Feed URL not valid: %s", $url));
 		}
