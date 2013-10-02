@@ -53,9 +53,9 @@ class FeedAnnotation extends Plugin
 	public function getListHooksRegistered()
 	{
 		return array(
-			'AdminMenu.add' => 'addAdminMenu',
+			'Menu.Admin.addItems' => 'addAdminMenu',
 			'TaskScheduler.getScheduledTasks' => 'getScheduledTasks',
-            'AssetManager.getJsFiles' => 'getJsFiles'
+			'AssetManager.getJavaScriptFiles' => 'getJsFiles'
 		);
 	}
 
@@ -103,7 +103,7 @@ class FeedAnnotation extends Plugin
 		$feeds = API::getInstance()->getFeeds();
 
 		foreach($feeds as $feed) {
-            $processor = new FeedProcessor($feed);
+			$processor = new FeedProcessor($feed);
 			try {
 				$processor->processFeed();
 			} catch (\Zend_Feed_Exception $ex) {
